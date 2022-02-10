@@ -4,6 +4,8 @@
 
 Integrates Profit Systems POS with WP Data Sync
 
+NOTE: Advanced Custom Fields Pro is required to use this plugin.
+
 ### Helpful Links ###
 
 * [WP Data Sync](https://wpdatasync.com/?affid=admin "WP Data Sync")
