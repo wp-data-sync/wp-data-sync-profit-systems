@@ -24,6 +24,6 @@ Here are a variety of links that we’ve found helpful in explaining our plugin 
 
 == Change Log ==
 
-[Change Log](https://wpdatasync.com/changelog/wp-data-sync-profit-systems-pos-integration/?affid=admin "Change Log")
+[Change Log](https://wpdatasync.com/plugin/wp-data-sync-profit-systems-pos-integration/?affid=admin "Change Log")
 
 == Upgrade Notice ==
