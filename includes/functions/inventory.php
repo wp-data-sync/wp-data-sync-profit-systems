@@ -26,7 +26,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action( 'wp_data_sync_post_meta_Profit_Inventory', function( $product_id, $inventory, $data_sync ) {
 
+	if ( ! function_exists( 'get_field' ) ) {
+		Log::write( 'profit-inventory', 'Advanced Custom Fields Pro is required to use this plugin.' );
+		return;
+	}
+
 	if ( is_array( $inventory ) ) {
+
+		$field_key = 'Profit_Inventory_Totals';
 
 		/**
 		 * Extract.
@@ -38,28 +45,34 @@ add_action( 'wp_data_sync_post_meta_Profit_Inventory', function( $product_id, $i
 
 		extract( $inventory );
 
-		if ( ! $Profit_Inventory = get_field( 'Profit_Inventory', $product_id ) ) {
-			$Profit_Inventory = [];
+		if ( ! $Profit_Inventory = get_field( $field_key, $product_id ) ) {
+			$Profit_Inventory   = [];
+		}
+			
+		$index = array_search( $warehouse, array_column( $Profit_Inventory, 'warehouse' ) );
+
+		if ( empty( $index ) ) {
+			$index = rand();
 		}
 
-		$key = array_search( $warehouse, array_column( $Profit_Inventory, 'warehouse' ) );
+		$_Profit_Inventory                       = $Profit_Inventory;
+		$_Profit_Inventory[ $index ]['warehouse'] = $warehouse;
+		$_Profit_Inventory[ $index ][ $status ]   = intval( $quantity );
 
-		if ( empty( $key ) ) {
-			$key = count( $Profit_Inventory );
-		}
+		update_field( $field_key, $_Profit_Inventory, $product_id );
 
-		$Profit_Inventory[ $key ]['warehouse'] = $warehouse;
-		$Profit_Inventory[ $key ][ $status ]   = $quantity;
+		$woo_stock_qty = 'NA';
 
-		update_field( 'Profit_Inventory', $Profit_Inventory, $product_id );
-
-		$woo_stock_qty = array_sum( array_column( $Profit_Inventory, 'A' ) );
+		$woo_stock_qty = array_sum( array_column( $_Profit_Inventory, 'A' ) );
 
 		update_post_meta( $product_id, '_stock', $woo_stock_qty );
 
 		Log::write( 'profit-inventory', [
-			'raw_data'      => $inventory,
-			'processed'     => $Profit_Inventory,
+			'product_id'    => $product_id,
+			'index'         => $index,
+			'new_data'      => $inventory,
+			'existing'      => $Profit_Inventory,
+			'processed'     => $_Profit_Inventory,
 			'woo_stock_qty' => $woo_stock_qty
 		], 'Profit_Inventory' );
 

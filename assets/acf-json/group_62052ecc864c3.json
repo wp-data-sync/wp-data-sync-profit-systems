@@ -5,7 +5,7 @@
         {
             "key": "field_62052ecc89a62",
             "label": "Profit Systems - Inventory",
-            "name": "Profit_Inventory",
+            "name": "Profit_Inventory_Totals",
             "type": "repeater",
             "instructions": "Inventory is synced automatically. If you manually update inventory, you will need to update WooCommerce Stock Quantity also.",
             "required": 0,
@@ -145,5 +145,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1644530096
+    "modified": 1644541994
 }
