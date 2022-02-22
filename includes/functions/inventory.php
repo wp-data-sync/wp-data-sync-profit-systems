@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param DataSync $data_sync
  */
 
-add_action( 'wp_data_sync_post_meta_Profit_Inventory', function( $product_id, $inventory, $data_sync ) {
+add_action( 'wp_data_sync_integration_profit_inventory', function( $product_id, $inventory, $data_sync ) {
 
 	if ( ! function_exists( 'get_field' ) ) {
 		Log::write( 'profit-inventory', 'Advanced Custom Fields Pro is required to use this plugin.' );
@@ -33,7 +33,7 @@ add_action( 'wp_data_sync_post_meta_Profit_Inventory', function( $product_id, $i
 
 	if ( is_array( $inventory ) ) {
 
-		$field_key = 'Profit_Inventory_Totals';
+		$field_key = 'Profit_Inventory_Values';
 
 		/**
 		 * Extract.
@@ -45,25 +45,23 @@ add_action( 'wp_data_sync_post_meta_Profit_Inventory', function( $product_id, $i
 
 		extract( $inventory );
 
-		if ( ! $Profit_Inventory = get_field( $field_key, $product_id ) ) {
-			$Profit_Inventory   = [];
+		if ( ! $existing = get_field( $field_key, $product_id ) ) {
+			$existing   = [];
 		}
 			
-		$index = array_search( $warehouse, array_column( $Profit_Inventory, 'warehouse' ) );
+		$index = array_search( $warehouse, array_column( $existing, 'warehouse' ) );
 
-		if ( empty( $index ) ) {
-			$index = rand();
+		if ( 0 !== $index && empty( $index ) ) {
+			$index = count( $existing );
 		}
 
-		$_Profit_Inventory                       = $Profit_Inventory;
-		$_Profit_Inventory[ $index ]['warehouse'] = $warehouse;
-		$_Profit_Inventory[ $index ][ $status ]   = intval( $quantity );
+		$processed                        = $existing;
+		$processed[ $index ]['warehouse'] = $warehouse;
+		$processed[ $index ][ $status ]   = intval( $quantity );
 
-		update_field( $field_key, $_Profit_Inventory, $product_id );
+		update_field( $field_key, $processed, $product_id );
 
-		$woo_stock_qty = 'NA';
-
-		$woo_stock_qty = array_sum( array_column( $_Profit_Inventory, 'A' ) );
+		$woo_stock_qty = array_sum( array_column( $processed, 'A' ) );
 
 		update_post_meta( $product_id, '_stock', $woo_stock_qty );
 
@@ -71,8 +69,8 @@ add_action( 'wp_data_sync_post_meta_Profit_Inventory', function( $product_id, $i
 			'product_id'    => $product_id,
 			'index'         => $index,
 			'new_data'      => $inventory,
-			'existing'      => $Profit_Inventory,
-			'processed'     => $_Profit_Inventory,
+			'existing'      => $existing,
+			'processed'     => $processed,
 			'woo_stock_qty' => $woo_stock_qty
 		], 'Profit_Inventory' );
 
