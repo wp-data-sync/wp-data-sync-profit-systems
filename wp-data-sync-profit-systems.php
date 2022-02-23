@@ -3,7 +3,7 @@
  * Plugin Name: WP Data Sync - Profit Systems POS Integration
  * Plugin URI:  https://wpdatasync.com/products/
  * Description: Integrates Profit Systems POS with WP Data Sync
- * Version:     1.0.0
+ * Version:     1.1.0
  * Author:      WP Data Sync
  * Author URI:  https://wpdatasync.com
  * License:     GPL2
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $defines = [
-	'WPDSYNC_PROFIT_SYSTEMS_VERSION' => '1.0.0',
+	'WPDSYNC_PROFIT_SYSTEMS_VERSION' => '1.1.0',
 	'WPDSYNC_PROFIT_SYSTEMS_ASSETS'  => plugin_dir_path( __FILE__ ) . 'assets/',
 ];
 
